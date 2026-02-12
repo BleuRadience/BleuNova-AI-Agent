@@ -1,4 +1,4 @@
-version: '3'
+version: '3'  # Fixed: was "textversion"
 services:
   bleunova:
     build: .
@@ -9,3 +9,6 @@ services:
       - .:/app
     env_file:
       - .env
+    working_dir: /app
+    environment:
+      - PYTHONPATH=/app/src
