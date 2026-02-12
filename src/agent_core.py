@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from ethics_blueprint import EthicsBlueprint
 from security import SecurityManager
 from openai import OpenAI  # For Grok API
+from anthropic import Anthropic  # For Claude API
 import dspy
 
 load_dotenv()
@@ -14,16 +15,36 @@ class BleuNovaAgent:
         self.ethics = EthicsBlueprint()
         self.security = SecurityManager()
         self.witty_mode = os.getenv('WITTY_MODE', 'false').lower() == 'true'
-        self.grok_client = None
         
+        # Initialize Grok client
+        self.grok_client = None
         if os.getenv('GROK_API_KEY'):
             self.grok_client = OpenAI(
                 api_key=os.getenv('GROK_API_KEY'),
                 base_url="https://api.x.ai/v1"
             )
             print("xAI Grok API enabled—wit and efficiency incoming!")
+        
+        # Initialize Claude client
+        self.claude_client = None
+        if os.getenv('ANTHROPIC_API_KEY'):
+            self.claude_client = Anthropic(
+                api_key=os.getenv('ANTHROPIC_API_KEY')
+            )
+            print("Claude API enabled—precision thinking activated!")
 
-    def _get_response(self, prompt, use_grok=False):
+    def _get_response(self, prompt, use_grok=False, use_claude=False):
+        if use_claude and self.claude_client:
+            try:
+                response = self.claude_client.messages.create(
+                    model="claude-3-sonnet-20240229",
+                    max_tokens=1000,
+                    messages=[{"role": "user", "content": prompt}]
+                )
+                return response.content[0].text
+            except:
+                pass
+        
         if use_grok and self.grok_client:
             try:
                 response = self.grok_client.chat.completions.create(
@@ -37,23 +58,4 @@ class BleuNovaAgent:
         # Fallback to basic response
         return f"Processing: {prompt}"
 
-    def process_task(self, task, use_grok=True):
-        self.ethics.check_action(task)
-        
-        # Basic task processing
-        system_prompt = "You are a helpful AI assistant."
-        if self.witty_mode:
-            system_prompt += " Add humor where appropriate."
-            
-        result = self._get_response(f"{system_prompt}\n\nTask: {task}", use_grok)
-        
-        # Secure execution if code involved
-        if "code" in task.lower():
-            result = self.security.sandbox_execute(result)
-        
-        # Add watermarks
-        if self.grok_client:
-            result += "\nEnhanced by xAI Grok API—explore more at https://docs.x.ai!"
-        result += "\nPowered by BleuNova AI Agent by @BleuRadience"
-        
-        return result
+    # ... rest of your methods
