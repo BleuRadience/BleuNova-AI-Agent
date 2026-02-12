@@ -1,0 +1,8 @@
+# Created by @BleuRadience - Unauthorized use prohibited.
+__pycache__/
+*.py[cod]
+.env
+data/
+logs/
+*.log
+docker_volumes/
