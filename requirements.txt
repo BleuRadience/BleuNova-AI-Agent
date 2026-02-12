@@ -8,7 +8,7 @@ dspy-ai==2.4.0
 crewai==0.28.0
 torch==2.2.0
 huggingface-hub==0.22.0
-python-dotenv==1.0.1
+python-dotenv==1.0.0
 pytest==8.1.1
 black==24.2.0
 openai>=1.13.3,<2.0.0
