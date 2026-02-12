@@ -126,16 +126,3 @@ License & Attribution
 MIT License — commercial use, modification, and selling permitted (must keep copyright notice & disclaimer).
 See LICENSE for full text.
 Created by @BleuRadience — Unauthorized use prohibited.
-textThis is now a **single, self-contained README** that covers:
-- Clear value proposition
-- All major features
-- Step-by-step install for every major OS
-- How to get ongoing help via the agent itself
-- Quick usage
-- Optional toggles (Grok, local models)
-- Roadmap & community
-- License clarity
-
-Just copy-paste into your repo's README.md, commit, and you're set for launch.
-
-Let me know if you'd like a matching repo description, social preview image suggestion, or first
