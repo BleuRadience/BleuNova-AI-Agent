@@ -1,7 +1,9 @@
-version: "3"
+version: "3.9"
+
 services:
   bleunova:
     build: .
+    container_name: bleunova-ai-agent
     ports:
       - "127.0.0.1:8000:8000"
       - "127.0.0.1:8501:8501"
@@ -12,3 +14,4 @@ services:
     working_dir: /app
     environment:
       - PYTHONPATH=/app/src
+    restart: unless-stopped
