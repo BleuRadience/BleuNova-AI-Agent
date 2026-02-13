@@ -1,17 +1,21 @@
-version: "3.9"
-
 services:
   bleunova:
     build: .
     container_name: bleunova-ai-agent
+    working_dir: /app
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app/src
+
+    # Lock access to this Mac only (prevents LAN/internet exposure)
     ports:
       - "127.0.0.1:8000:8000"
       - "127.0.0.1:8501:8501"
+
+    # Persist files + keep live code mount
     volumes:
+      - ./:/app
       - ./data:/data
-    env_file:
-      - .env
-    working_dir: /app
-    environment:
-      - PYTHONPATH=/app/src
+
     restart: unless-stopped
