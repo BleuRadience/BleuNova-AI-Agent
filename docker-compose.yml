@@ -1,14 +1,12 @@
-version: '3'  # Fixed: was "textversion"
+version: "3"
 services:
   bleunova:
     build: .
     ports:
-      - ports:
-  - "127.0.0.1:8000:8000"
-  - "127.0.0.1:8501:8501"
-      - "${DASHBOARD_PORT:-8501}:8501"
-      volumes:
-  - ./data:/data
+      - "127.0.0.1:8000:8000"
+      - "127.0.0.1:8501:8501"
+    volumes:
+      - ./data:/data
     env_file:
       - .env
     working_dir: /app
