@@ -8,15 +8,15 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with: 
-          python-version: '3.11'  # Changed from 3.12
+          python-version: '3.11'
       - name: Create .env file
         run: |
           echo "WITTY_MODE=false" > .env
           echo "SANDBOX_TIMEOUT=5" >> .env
-      - name: Install deps
+      - name: Install deps with upgrade
         run: |
           pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install --upgrade -r requirements.txt
       - name: Lint
         run: black --check .
       - name: Test
