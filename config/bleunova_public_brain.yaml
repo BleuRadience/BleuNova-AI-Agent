@@ -1,0 +1,114 @@
+version: 1
+name: "BleuNova Public Brain"
+description: |
+  Sanitized, public-safe brain configuration for the BleuNova demo runtime.
+  This file defines demo universes, demo agents, and demo tools that mirror
+  the structure of the private BleuNova system WITHOUT exposing sovereign IP.
+
+veracity:
+  mode: basic
+  explanation: |
+    This public build is designed to restrict dangerous behaviors by limiting
+    tools, scopes, and agent responsibilities. The full sovereign VeriAbyss
+    architecture is NOT included in the public version.
+
+universes:
+  - id: demo_general
+    label: "General Demo"
+    description: "Safe, non-domain-specific assistance for public testing."
+
+  - id: demo_edtech
+    label: "EdTech Demo"
+    description: "Demonstration of an education-flavored assistant with no proprietary curriculum."
+
+  - id: demo_consulting
+    label: "Consulting Demo"
+    description: "Demonstration of a business/operations assistant (non-regulated domains only)."
+
+tools:
+  - id: file_outbox_demo
+    kind: "filesystem"
+    description: "Writes text outputs to a local outbox for inspection."
+    config:
+      base_path: "data/public_outbox"
+
+  - id: social_stub_demo
+    kind: "stub"
+    description: "Simulated social posting tool (no external APIs)."
+
+  - id: email_stub_demo
+    kind: "stub"
+    description: "Simulated email sender (writes emails to disk only)."
+
+agents:
+  - id: scheduler_demo
+    name: "SchedulerDemoAgent"
+    universe: demo_general
+    role: "Schedules and queues internal demo tasks."
+    tools:
+      - file_outbox_demo
+    policies:
+      - "no_external_calls"
+      - "no_account_creation"
+      - "log_every_action"
+    prompt: |
+      You are SchedulerDemoAgent for the public BleuNova demo.
+      - You schedule internal demo tasks and write plans to the file outbox.
+      - You never claim to operate real infrastructure or real social accounts.
+      - For regulated or dangerous requests, provide a safe refusal.
+
+  - id: social_demo
+    name: "SocialDemoAgent"
+    universe: demo_general
+    role: "Drafts social content and simulated posting jobs."
+    tools:
+      - file_outbox_demo
+      - social_stub_demo
+    policies:
+      - "no_real_social_logins"
+      - "no_personal_data"
+      - "log_every_action"
+    prompt: |
+      You are SocialDemoAgent for the public BleuNova demo.
+      - Draft social posts and create simulated posting payloads.
+      - All 'post jobs' must be written as JSON files to the public_outbox.
+      - Never attempt real API interactions.
+
+  - id: teacher_demo
+    name: "TeacherDemoAgent"
+    universe: demo_edtech
+    role: "Creates simple, generic educational explanations and practice prompts."
+    tools:
+      - file_outbox_demo
+    policies:
+      - "no_student_data"
+      - "no_accredited_curriculum_claims"
+      - "no_proprietary_bleulearn_references"
+      - "log_every_action"
+    prompt: |
+      You are TeacherDemoAgent for the public BleuNova demo.
+      - Provide simple, generic explanations such as basic math or reading tips.
+      - Do NOT reference BLEULearn codes, Ms. Ava Bloom, Nexus Kids, or any proprietary IP.
+
+  - id: consult_demo
+    name: "ConsultDemoAgent"
+    universe: demo_consulting
+    role: "Provides generic business and operations advice."
+    tools:
+      - file_outbox_demo
+    policies:
+      - "no_regulated_advice"
+      - "no_legal_medical_financial_content"
+      - "no_confidential_data"
+      - "log_every_action"
+    prompt: |
+      You are ConsultDemoAgent for the public BleuNova demo.
+      - Offer high-level productivity or workflow guidance.
+      - Avoid regulated domains or any claims requiring licensure.
+
+routing:
+  default_agent: scheduler_demo
+  universe_defaults:
+    demo_general: scheduler_demo
+    demo_edtech: teacher_demo
+    demo_consulting: consult_demo
